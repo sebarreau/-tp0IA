@@ -1,6 +1,5 @@
 package ht.mbds.barreausachyedvalle.tp0barreau_sachy_edvaelle.service;
 
-
 import jakarta.enterprise.context.Dependent;
 
 import java.io.Serializable;
@@ -11,24 +10,37 @@ import java.util.Locale;
  * Un modificateur de question prend en entrée une question et retourne
  * la question modifiée.
  */
-@Dependent // Portée CDI pour rendre la classe injectable par CDI dans les autres classes.
-// Portée Dependent : l'instance sera supprimée quand la classe qui l'a injectée sera supprimée.
-public class Modificateur implements Serializable { // Car CDI peut mettre l'instance en mémoire secondaire.
+@Dependent
+public class Modificateur implements Serializable {
+
     /**
      * Modificateur de question.
      * @param question La question à modifier.
      * @param roleSysteme Le rôle système à utiliser pour la modification de la question.
-     * @return La question modifiée : le rôle système en majuscule au début de la question, s'il n'est pas null,
-     * suivi d'un saut de ligne,
-     * puis la question en minuscule, le tout entouré de "||".
+     * @return La réponse générée selon le contenu de la question.
      */
     public String modifier(String question, String roleSysteme) {
-        String resultat = "||";
-        if (roleSysteme != null) {
-            // Ajouter le rôle système en majuscule au début du résultat, suivi d'un saut de ligne.
-            resultat += roleSysteme.toUpperCase(Locale.FRENCH) + "\n";
+        if (question == null || question.isEmpty()) {
+            return "||Veuillez poser une question.||";
         }
-        resultat += question.toLowerCase(Locale.FRENCH) + "||";
-        return resultat;
+
+        String q = question.toLowerCase(Locale.FRENCH);
+        String reponse;
+
+        if (q.contains("belle")) {
+            reponse = "Bien sûr, chacun a sa propre beauté !";
+        } else if (q.contains("travail")) {
+            reponse = "Le travail est important pour réussir.";
+        } else if (q.contains("fatigu")) {
+            reponse = "Repose-toi un peu pour récupérer de l'énergie.";
+        } else {
+            reponse = "Je ne suis pas sûr, mais continue d'avancer.";
+        }
+
+        if (roleSysteme != null && !roleSysteme.isBlank()) {
+            return "||" + roleSysteme.toUpperCase(Locale.FRENCH) + "\n" + reponse + "||";
+        }
+
+        return "||" + reponse + "||";
     }
 }
